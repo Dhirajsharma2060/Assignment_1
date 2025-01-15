@@ -24,10 +24,4 @@ class Task(TaskBase):
     id: int
 
     class Config:
-        orm_mode = True
-        fields = {
-            'id': ...,
-            'title': ...,
-            'description': ...,
-            'completed': ...
-        }
+        from_attributes = True
