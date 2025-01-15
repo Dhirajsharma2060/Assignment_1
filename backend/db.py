@@ -10,8 +10,7 @@ import logging
 load_dotenv()
 
 # Database URL
-#SQLALCHEMY_DATABASE_URL = "postgresql://neondb_owner:Q5q9MNwchRfL@ep-yellow-bush-a5v1yfum.us-east-2.aws.neon.tech/Task"
-SQLALCHEMY_DATABASE_URL = os.getenv("POST_URL")
+SQLALCHEMY_DATABASE_URL = os.getenv("REND_URL")
 # Create the SQLAlchemy engine
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 

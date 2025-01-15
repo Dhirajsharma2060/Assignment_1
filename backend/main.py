@@ -68,6 +68,19 @@ def delete_task(task_id: int, db: Session = Depends(get_db)):
     db.commit()
     return db_task
 
+@app.delete("/tasks", response_model=List[TaskSchema])
+def delete_all_tasks(db: Session = Depends(get_db)):
+    """
+    Delete all tasks.
+    """
+    tasks = db.query(TaskModel).all()
+    if not tasks:
+        raise HTTPException(status_code=404, detail="No tasks found")
+    for task in tasks:
+        db.delete(task)
+    db.commit()
+    return tasks
+
 @app.get("/tasks/{task_id}", response_model=TaskSchema)
 def read_task(task_id: int, db: Session = Depends(get_db)):
     """
