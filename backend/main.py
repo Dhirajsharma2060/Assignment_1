@@ -12,18 +12,18 @@ from exceptions import http_exception_handler, validation_exception_handler, gen
 app = FastAPI()
 
 # Configure CORS
-#origins = [
-#    "http://localhost:3000",  # React development server
-#    #"https://todo-app-myh1.onrender.com",  # Deployed backend
-#]
+origins = [
+    "https://frontend-part-oj8w.onrender.com/",  # React development server
+    #"https://todo-app-myh1.onrender.com",  # Deployed backend
+]
 
-#app.add_middleware(
-#    CORSMiddleware,
-#    allow_origins=origins,
-#    allow_credentials=True,
-#    allow_methods=["*"],
-#    allow_headers=["*"],
-#)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Test the database connection
 test_db_connection()
