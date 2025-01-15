@@ -4,8 +4,8 @@ from sqlalchemy.orm import Session
 from typing import List
 import uvicorn
 from db import get_db, engine, test_db_connection
-from models import Base, Task as TaskModel
-from schemas import Task as TaskSchema, TaskCreate
+from models import Base, NewTask as TaskModel
+from schemas import NewTask as TaskSchema, NewTaskCreate as TaskCreate, NewTaskUpdate as TaskUpdate
 from exceptions import http_exception_handler, validation_exception_handler, generic_exception_handler
 
 app = FastAPI()
@@ -21,37 +21,37 @@ def read_root():
     """
     Root endpoint.
     """
-    return {"message": "Welcome to the To-Do App"}
+    return {"message": "Welcome to the Todo App"}
 
-@app.get("/tasks", response_model=List[TaskSchema])
-def read_tasks(db: Session = Depends(get_db)):
+@app.get("/tasks/", response_model=List[TaskSchema])
+def read_tasks(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
     """
     Retrieve all tasks.
     """
-    return db.query(TaskModel).all()
+    tasks = db.query(TaskModel).offset(skip).limit(limit).all()
+    return tasks
 
-@app.post("/tasks", response_model=TaskSchema)
+@app.post("/tasks/", response_model=TaskSchema)
 def create_task(task: TaskCreate, db: Session = Depends(get_db)):
     """
     Create a new task.
     """
-    db_task = TaskModel(**task.dict())
+    db_task = TaskModel(name=task.name, status=task.status)
     db.add(db_task)
     db.commit()
     db.refresh(db_task)
     return db_task
 
 @app.patch("/tasks/{task_id}", response_model=TaskSchema)
-def update_task(task_id: int, task: TaskCreate, db: Session = Depends(get_db)):
+def update_task(task_id: int, task: TaskUpdate, db: Session = Depends(get_db)):
     """
     Update an existing task.
     """
     db_task = db.query(TaskModel).filter(TaskModel.id == task_id).first()
     if db_task is None:
         raise HTTPException(status_code=404, detail="Task not found")
-    db_task.title = task.title
-    db_task.description = task.description
-    db_task.completed = task.completed
+    db_task.name = task.name
+    db_task.status = task.status
     db.commit()
     db.refresh(db_task)
     return db_task
@@ -77,6 +77,17 @@ def read_task(task_id: int, db: Session = Depends(get_db)):
     if db_task is None:
         raise HTTPException(status_code=404, detail="Task not found")
     return db_task
+
+@app.delete("/tasks/", response_model=List[TaskSchema])
+def delete_all_tasks(db: Session = Depends(get_db)):
+    """
+    Delete all tasks.
+    """
+    tasks = db.query(TaskModel).all()
+    for task in tasks:
+        db.delete(task)
+    db.commit()
+    return tasks
 
 # Global exception handlers
 app.add_exception_handler(HTTPException, http_exception_handler)

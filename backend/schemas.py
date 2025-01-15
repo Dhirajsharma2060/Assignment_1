@@ -1,27 +1,33 @@
-from pydantic import BaseModel, constr
+from pydantic import BaseModel
 from typing import Optional
+from datetime import datetime
 
-DescriptionStr = constr(max_length=500)
+class NewTaskBase(BaseModel):
+    """
+    Base schema for NewTask.
+    """
+    name: str
+    status: bool = False
 
-class TaskBase(BaseModel):
+class NewTaskCreate(NewTaskBase):
     """
-    Base schema for Task.
-    """
-    title: str
-    description: Optional[str] = None
-    completed: bool = False
-
-class TaskCreate(TaskBase):
-    """
-    Schema for creating a new Task.
+    Schema for creating a new NewTask.
     """
     pass
 
-class Task(TaskBase):
+class NewTaskUpdate(NewTaskBase):
     """
-    Schema for reading a Task.
+    Schema for updating an existing NewTask.
+    """
+    pass
+
+class NewTask(NewTaskBase):
+    """
+    Schema for reading a NewTask.
     """
     id: int
+    created_at: datetime
+    updated_at: Optional[datetime]
 
     class Config:
-        from_attributes = True
+        from_attributes  = True
