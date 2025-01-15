@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException, Depends
 from fastapi.exceptions import RequestValidationError
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 from typing import List
 import uvicorn
@@ -9,6 +10,20 @@ from schemas import NewTask as TaskSchema, NewTaskCreate as TaskCreate, NewTaskU
 from exceptions import http_exception_handler, validation_exception_handler, generic_exception_handler
 
 app = FastAPI()
+
+# Configure CORS
+#origins = [
+#    "http://localhost:3000",  # React development server
+#    #"https://todo-app-myh1.onrender.com",  # Deployed backend
+#]
+
+#app.add_middleware(
+#    CORSMiddleware,
+#    allow_origins=origins,
+#    allow_credentials=True,
+#    allow_methods=["*"],
+#    allow_headers=["*"],
+#)
 
 # Test the database connection
 test_db_connection()

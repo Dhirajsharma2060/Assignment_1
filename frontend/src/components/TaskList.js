@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { fetchTasks, createTask, updateTask, deleteTask, deleteAllTasks } from '../services/api';
 import TaskForm from './TaskForm';
 import './TaskList.css';
 import { FaEdit, FaTrash } from 'react-icons/fa';
@@ -7,25 +8,58 @@ const TaskList = () => {
     const [tasks, setTasks] = useState([]);
     const [taskToEdit, setTaskToEdit] = useState(null);
 
-    const addTask = (task) => {
-        setTasks([...tasks, { ...task, id: tasks.length + 1 }]);
+    useEffect(() => {
+        const getTasks = async () => {
+            try {
+                const tasks = await fetchTasks();
+                setTasks(tasks);
+            } catch (error) {
+                console.error('Error fetching tasks:', error);
+            }
+        };
+
+        getTasks();
+    }, []);
+
+    const addTask = async (task) => {
+        try {
+            const newTask = await createTask(task);
+            setTasks([...tasks, newTask]);
+        } catch (error) {
+            console.error('Error adding task:', error);
+        }
     };
 
-    const editTask = (updatedTask) => {
-        setTasks(tasks.map(task => (task.id === updatedTask.id ? updatedTask : task)));
-        setTaskToEdit(null);
+    const editTask = async (updatedTask) => {
+        try {
+            const editedTask = await updateTask(updatedTask.id, updatedTask);
+            setTasks(tasks.map(task => (task.id === updatedTask.id ? editedTask : task)));
+            setTaskToEdit(null);
+        } catch (error) {
+            console.error('Error editing task:', error);
+        }
     };
 
     const handleEdit = (task) => {
         setTaskToEdit(task);
     };
 
-    const handleDelete = (taskId) => {
-        setTasks(tasks.filter(task => task.id !== taskId));
+    const handleDelete = async (taskId) => {
+        try {
+            await deleteTask(taskId);
+            setTasks(tasks.filter(task => task.id !== taskId));
+        } catch (error) {
+            console.error('Error deleting task:', error);
+        }
     };
 
-    const handleClearAll = () => {
-        setTasks([]);
+    const handleClearAll = async () => {
+        try {
+            await deleteAllTasks();
+            setTasks([]);
+        } catch (error) {
+            console.error('Error clearing tasks:', error);
+        }
     };
 
     return (
