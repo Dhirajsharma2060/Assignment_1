@@ -14,8 +14,9 @@ app = FastAPI()
 # Configure CORS
 origins = [
     #"https://frontend-part-oj8w.onrender.com/",  # React development server
-    #"https://todo-app-myh1.onrender.com",  # Deployed backend
+    # "https://todo-app-myh1.onrender.com",  # Deployed backend
     "https://frontend-5w9c.onrender.com",
+    "https://frontend-part-oj8w.onrender.com/",
 ]
 
 app.add_middleware(
