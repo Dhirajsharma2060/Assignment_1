@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { fetchTasks, createTask, updateTask, deleteTask, deleteAllTasks } from '../services/api';
 import TaskForm from './TaskForm';
+import Loader from './Loader';
 import './TaskList.css';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 
 const TaskList = () => {
     const [tasks, setTasks] = useState([]);
+    const [loading, setLoading] = useState(true);
     const [taskToEdit, setTaskToEdit] = useState(null);
 
     useEffect(() => {
@@ -15,6 +17,8 @@ const TaskList = () => {
                 setTasks(tasks);
             } catch (error) {
                 console.error('Error fetching tasks:', error);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -62,6 +66,10 @@ const TaskList = () => {
         }
     };
 
+    if (loading) {
+        return <Loader />;
+    }
+
     return (
         <div className="task-list">
             <TaskForm addTask={addTask} editTask={editTask} taskToEdit={taskToEdit} totalTasks={tasks.length} />
@@ -72,7 +80,8 @@ const TaskList = () => {
                         <div>
                             <h3>{task.name}</h3>
                             <p>Status: {task.status ? 'Completed' : 'Pending'}</p>
-                            <p>Added/Updated: {task.timestamp}</p>
+                            <p>Created At: {new Date(task.created_at).toLocaleString()}</p>
+                            <p>Updated At: {task.updated_at ? new Date(task.updated_at).toLocaleString() : 'Never'}</p>
                         </div>
                         <div>
                             <button onClick={() => handleEdit(task)} className="edit-btn">

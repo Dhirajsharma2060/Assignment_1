@@ -18,6 +18,7 @@ origins = [
     "https://frontend-5w9c.onrender.com",
     "https://frontend-part-oj8w.onrender.com/",
     "https://assignment-1-lm22.onrender.com",
+    "http://localhost:3000",
 ]
 
 app.add_middleware(
