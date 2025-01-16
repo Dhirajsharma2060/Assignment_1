@@ -17,6 +17,7 @@ origins = [
     # "https://todo-app-myh1.onrender.com",  # Deployed backend
     "https://frontend-5w9c.onrender.com",
     "https://frontend-part-oj8w.onrender.com/",
+    "https://assignment-1-lm22.onrender.com",
 ]
 
 app.add_middleware(
